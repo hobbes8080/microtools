@@ -1,7 +1,7 @@
 #pragma once
 
 extern "C" {
-#include "kernel/lines.h"
+#include "microtools_development/kernel/lines.h"
 }
 
 /* opencv */
