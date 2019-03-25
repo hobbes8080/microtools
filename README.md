@@ -80,7 +80,7 @@ Fetch:
 ```
 cd ~/microtools/microtools
 git init
-git clone <remote repository URL>
+git clone <remote repository URL>  # https://github.com/hobbes8080/microtools.git
 ```
 
 Generate makefiles (from emacs IDE):
