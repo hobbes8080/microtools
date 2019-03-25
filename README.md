@@ -136,4 +136,4 @@ The National Library of Medicine Insight Toolkit (Yoo TS, Ackerman MJ, Lorensen 
 
 Carsten Steger (Steger C (1998) An unbiased detector of curvilinear structures. IEEE Transactions on pattern analysis and machine intelligence 20:113–125)
 
-Microsoft getopt implementation (2016)
+Microsoft getopt implementation (2016) for Windows compatibility
