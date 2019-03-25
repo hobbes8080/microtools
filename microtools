@@ -1,0 +1,382 @@
+#!/bin/bash
+
+ver="63"
+
+# select how to invoke core; depends if it is installed (make install, snap, etc) or not
+# local instance
+microtools_command=./microtools.core
+# snap OR make install OR install .deb
+microtools_command=microtools.core
+
+opts_string=[xezaclqjdshewkrvmngtbfoi:p:]
+usage_string=${opts_string}";; maintenance [-xezacl]; batch processing [-qdshvwkqbfmty] [-p parameter_file]; debug [-jdshvwkqbfmty] [-i input file] [-p parameter_file]"
+# microtools_command=microtools
+
+# microtools batch, 2017-11-28, 2018-05-13, 2018-06-08, 2018-11-21 by Matthias Hilty
+
+# usage: put script in a folder together with microtools executable, as well as any number of .avi or .mha video files
+# the script will analyze all video files and concatenate all output csv files into one per-video file (videos.csv) and one per-vessel file (vessels.csv)
+# all arguments to the script are passed on to microtools (with addition to the -i argument that is generated in the file iterations)
+# ver 1.5 adds multithreading to batch execution
+
+# in addition to microtools batch analysis, this script is able to perform some maintenance tasks directly within the script:
+
+# -x: perform microtools results cleaning (CAVE data loss may occur)
+# remove all previous microtools results in this folder and one level of subfolders
+
+# -z: perform microtools multiple batch tread
+# merge all csv files that start with "videos", "vessels", and "std_ridges" in the same folder
+# create the files "m_videos_all.csv", "m_vessels_all.csv", and "m_std_ridges_all.csv"
+
+# -a: perform AVATread
+# AVATread ver 1.0, 2018-05-13 by Matthias Hilty
+# usage: put script in base folder of a AVA 3.0 or 3.2 analysis folder
+# the AVA export folder contains the video files [videoname].avi, a
+# loogbook file [videoname]_Logbook1.txt and
+# a report file [videoname]_Report1.avi
+# The script gathers all standard AVA parameters in a single csv file
+
+# -c: perform CCTread
+# CCTread ver 1.3, 2017-10-25, 2018-05-09 by Matthias Hilty
+# usage: put script in base folder of a CCT 1.7.10 or 1.7.12 export folder
+# a file each containing: filenames, TVD, PVD, APSI; will be created. the subject order corresponds in each file.
+# finally, export.csv is generated, containing all data
+
+# -e: when run from a cctools parent directory, move all mha files from the subfolders to the parent directory, also move and rename all xml files. Rename of xml files is performed using the file name stem in order to preserve the association to the corresponding mha file - since all xml files in CCTools have the same name...
+
+# -l: tidy up file names
+# rename all files in the current folder if they contain spaces or some special characters in the file name
+
+# k: display usage help
+
+# examples
+# ---------------------------
+
+# example detection, incl. image writing:
+# ./microtools_batch.sh -dw
+
+# example detection and std, incl. image writing:
+# ./microtools_batch.sh -sw
+
+# example detection, std and hematocrit, incl. image writing:
+# ./microtools_batch.sh -shw
+
+# CAVE: if a mha video is stabilized and containd black borders, use -t argument to remove black borders
+
+# TODO: influence video selection (file type, as well as name regex or so)
+
+echo "Microtools FRAMEWORK version $ver"
+
+#check for options that mandate direct handling in the script
+core_run_mode=0
+ARGS=$@
+OPTS=`getopt -o "$opts_string" -- "$@"`
+eval set -- "$OPTS"
+while true; do
+    case "$1" in
+	-x)
+	    echo "Cleaning previous microtools results."
+	    #--------------
+	    #delete csv files where corresponding video files exist
+	    echo "Cleaning individual .csv files."
+	    find . -iname '*.avi' -o -iname '*.mha' -prune|while read file; do
+		dir=$(dirname "$file")
+		csv=$dir/*.csv
+		logfiles=($csv)
+		if [[ ${#logfiles[@]} -gt 0 ]]; then
+		    echo "removing csv file(s) (subfolder routine): $csv"
+		    rm $csv
+		# else
+		#     echo "no csv present, not removing. (subfolder routine)"
+		fi
+	    done
+	    csv="./*.csv"
+	    logfiles=($csv)
+	    if [[ ${#logfiles[@]} -gt 0 ]]; then
+		echo "removing csv file(s) (home routine): $csv"
+		rm $csv
+	    # else
+	    # 	echo "no csv present, not removing. (home routine)"
+	    fi
+	    #delete STD and HCT folders and files
+	    echo "Cleaning STD andh HCT folders."
+	    rm -r *_STD
+	    rm -r *_HCT
+	    #delete png files
+	    echo "Cleaning contrasting and vessel recognition files."
+	    rm *_ctr_?.png
+	    rm *_dve.png
+	    #--------------
+	    echo "Done."
+	    exit
+	    shift;;
+	-z)
+	    echo "Merging previous microtools batch results."
+	    #------------------
+	    vid="ZZ_videos*.csv"
+	    ves="ZZ_vessels*.csv"
+	    std="ZZ_rbcpaths*.csv"
+	    i=0
+	    find $vid -maxdepth 1|while read file; do
+		echo "Merging video results csv file: $file"
+		if [ $i -eq 0 ]; then
+		    # initialize output files
+		    cat $file > m_videos_all.csv
+		else
+		    # skip first line of consecutive csv files
+		    tail -n +2 $file >> m_videos_all.csv
+		fi
+		((i++))
+	    done
+	    i=0
+	    find $ves -maxdepth 1|while read file; do
+		echo "Merging vessels results csv file: $file"
+		if [ $i -eq 0 ]; then
+		    # initialize output files
+		    cat $file > m_vessels_all.csv
+		else
+		    # skip first line of consecutive csv files
+		    tail -n +2 $file >> m_vessels_all.csv
+		fi
+		((i++))
+	    done
+	    i=0
+	    find $std -maxdepth 1|while read file; do
+		echo "Merging rbcpaths results csv file: $file"
+		if [ $i -eq 0 ]; then
+		    # initialize output files
+		    cat $file > m_rbcpaths_all.csv
+		else
+		    # skip first line of consecutive csv files
+		    tail -n +2 $file >> m_rbcpaths_all.csv
+		fi
+		((i++))
+	    done
+	    #------------------
+	    echo "Done."
+	    exit
+	    shift;;
+	-a)
+	    echo "Performing AVATread."
+	    #------------------
+	    # initialize temp. files
+	    echo -n > name.txt
+	    echo -n > TVD.txt
+	    echo -n > PVD.txt
+	    echo -n > PPV.txt
+	    echo -n > MFI.txt
+	    echo -n > MFIves.txt
+	    # extract parameters
+	    # the following hacks are applied to account for differences in files:
+	    # remove windows carriage return characters: tr -d '\r'
+	    # change ',' into '.' if present: sed -r 's/,+/./g'
+	    # in file names, the windows delimited path is removed: rev|cut -d'\' -f 1 |rev
+	    for file in ./*_Report1*.txt; do
+		echo "processing AVA report file: $file"
+		cat $file | sed -n 's/^.*log file[)]\t//p'|rev|cut -d'\' -f 1 |rev|tr -d '\r'  >> name.txt		
+		cat $file | sed -n 's/^.*TVD[)] [(]mm[/]mm2[)]\t//p'|sed -r 's/,+/./g'|tr -d '\r' >> TVD.txt
+		cat $file | sed -n 's/^.*PVD[)] [(]mm[/]mm2[)]\t//p'|sed -r 's/,+/./g'|tr -d '\r' >> PVD.txt
+		cat $file | sed -n 's/^.*PPV[)] [(][%][)]\t//p'|sed -r 's/,+/./g'|tr -d '\r' >> PPV.txt
+		cat $file | sed -n 's/^.*MFI[)]\t//p'|sed -r 's/,+/./g'|tr -d '\r' >> MFI.txt
+		cat $file | sed -n '0,/^.*Small\t0[,]0[.][.]25[,]0\t/! {0,/^.*Small\t0[,]0[.][.]25[,]0\t/ s/^.*Small\t0[,]0[.][.]25[,]0\t//p}'|sed -r 's/,+/./g'|tr -d '\r' >> MFIves.txt
+	    done
+	    # aggregating results into csv file
+	    echo -e "filename\tTVD_small\tTVD_large\tTVD_all\tPVD_small\tPVD_large\tPVD_all\tPPV_small\tPPV_large\tPPV_all\tMFI_small\tMFI_large\tMFI_all\tMFI_pervessel_unclassified\tMFI_pervessel_no_flow\tMFI_pervessel_intermittent\tMFI_pervessel_sluggish\tMFI_pervessel_continuous\tMFI_pervessel_hyperdynamic\tMFI_pervessel_total_percentage" > export.csv
+	    paste -d '\t' name.txt TVD.txt PVD.txt PPV.txt MFI.txt MFIves.txt >> export.csv
+	    # remove temp files
+	    rm name.txt
+	    rm TVD.txt
+	    rm PVD.txt
+	    rm PPV.txt
+	    rm MFI.txt
+	    rm MFIves.txt
+	    #------------------
+	    echo "Done."
+	    exit
+	    shift;;
+	-c)
+	    echo "Performing CCTread."
+	    #------------------
+	    # processing file names
+	    # since the search string occurs two times per file, each file must be processed individually by sed and restricted to the first 15 lines
+	    # somehow, a trailing character has to be removed from the output, this is achieved using rev|cut|rev
+	    echo -n > name.txt
+	    echo -n > TVD.txt
+	    echo -n > PVD.txt
+	    echo -n > APSI.txt
+	    find -iname *.pdf|while read pdffile; do
+		echo "Processing PDF file:" $pdffile
+		# pdf2txt $pdffile|sed -n '1,15 s/^.*Capture Videoname: //p'|rev|cut -c2-|rev >> name.txt
+		# in new versions of pdf2txt, random blank spaces are introduced. these need to be removed using tr -d ' ' within the pipe
+		# pdf2txt $pdffile | tr -d ' ' | sed -n 's/^.*CaptureVideoname://p' |rev|cut -c2-|rev > name_tmp.txt
+		# echo name_tmp.txt | sed -n '1' > name.txt
+		pdf2txt $pdffile > tmp.txt
+		cat tmp.txt | tr -d ' ' |sed -n '1,15 s/^.*CaptureVideoname://p'|rev|cut -c2-|rev >> name.txt
+		cat tmp.txt | tr -d ' ' | sed -n 's/^.*TVD://p' >> TVD.txt
+		cat tmp.txt | tr -d ' ' | sed -n 's/^.*PVD://p' >> PVD.txt
+		cat tmp.txt | tr -d ' ' | sed -n 's/^.*AveragePerfusedSpeedIndicator-APSI(Experimental)://p' >> APSI.txt
+		cat tmp.txt | tr -d ' ' | sed -n 's/^.*MFI://p' >> APSI.txt
+		# pdf2txt $pdffile| tr -d ' ' | sed -n 's/^.*CaptureVideoname://p'|rev|cut -c2-|rev >> name.txt
+	    done
+	    # generate .csv file
+	    echo "Writing results: export.csv"
+	    echo -e "filename\tTVD\tPVD\tAPSI" > export.csv
+	    #paste -d ";" name.txt TVD.txt PVD.txt APSI.txt >> export.csv
+	    paste name.txt TVD.txt PVD.txt APSI.txt >> export.csv
+	    # remove temp files
+	    rm name.txt
+	    rm TVD.txt
+	    rm PVD.txt
+	    rm APSI.txt
+	    #------------------
+	    exit
+	    shift;;
+	-l)
+	    echo "Cleaning up file names in current directory..."
+	    #------------------
+	    for f in *; do
+		# remove spaces and some special characters
+		mv "$f" "${f//[ ()]/_}"
+	    done
+	    #------------------
+	    echo "Done."
+	    exit
+	    shift;;
+	-e)
+	    echo "Preparing CCTools workspace folder for analysis."
+	    #this script must be run from a CCTools parent folder
+	    echo "Moving and renaming individual .xml files."
+	    #move and rename all xml files to parent dir
+	    find . -mindepth 2 -type f|grep ".xml"|while read file; do
+		filept=$(dirname $file|cut -c3-)
+		filenm=$(basename $file)
+		filename=./${filept}_${filenm}
+		mv $file $filename
+	    done
+	    #move all mha files to parent dir
+	    echo "Moving .mha files."
+	    find . -mindepth 2 -type f|grep ".mha"|while read file; do
+		mv $file .
+	    done
+	    echo "Done."
+	    exit
+	    shift;;
+	-j)
+	    # echo Entering Microtools debug mode...
+	    core_run_mode=1
+	    shift;;
+	-q)	    
+	    # echo Entering Microtools batch mode...
+	    core_run_mode=2
+       	    shift;;
+	--)
+	    break;;
+	*)
+	    break;;
+    esac
+done
+
+if [[ $core_run_mode -eq 0 ]]; then
+    echo Usage: $usage_string
+    exit
+fi
+
+# get the remaining command line options (the ones which have not yet been processed by the script above), and convert them to a string
+args_core="${@}"
+# remove trailing -- (which marks "end of options" and makes further addition of -i below impossible)
+args_core=${args_core%???}
+
+if [[ $core_run_mode -eq 1 ]]; then
+    echo "Debug mode initiated."
+    # echo passing arguments: $@
+    # run microtools
+    ${microtools_command} $@
+    exit
+fi
+
+if [[ $core_run_mode -eq 2 ]]; then
+    echo "Initiating batch processing."
+
+    # in the upcoming for loops, break if there are no matching files
+    shopt -s nullglob
+
+    # delete csv files in "home" directory and in subdirectories
+    # (do this here instead of in the "microtools" loop,
+    # since otherwise in the case of multiple files being in the same subfolder,
+    # results generated in the current cycle will inappropriately be deleted)
+    # -prune argument: the search goes only one level of subfolders deep -- WRONG
+    find . -maxdepth 1 -iname '*.avi' -o -iname '*.mha' -prune|while read file; do
+	dir=$(dirname "$file")
+	csv=$dir/*.csv
+	logfiles=($csv)
+	if [[ ${#logfiles[@]} -gt 0 ]]; then
+	    echo "Removing csv file(s) (subfolder routine): $csv"
+	    rm $csv
+	# else
+	#     echo "no csv present, not removing. (subfolder routine)"
+	fi
+    done
+    csv="./*.csv"
+    logfiles=($csv)
+    if [[ ${#logfiles[@]} -gt 0 ]]; then
+	echo "Removing csv file(s) (home routine): $csv"
+	rm $csv
+    # else
+    # 	echo "no csv present, not removing. (home routine)"
+    fi
+
+    # run microtools
+    # -prune argument: the search goes only one level of subfolders deep
+    # find . -iname '*.avi' -o -iname '*.mha' -prune|while read file; do
+    #     # run microtools
+    #     echo "processing video file: $file, using arguments: $ARGS"
+    #     ./microtools $ARGS -i "$file"
+    # done
+    # implement multithreading for batch processing
+    #parallel --citation
+    find . -maxdepth 1 -iname '*.avi' -o -iname '*.mha' -o -iname '*.h????' -prune | time parallel -j-1 --eta ${microtools_command} ${args_core} -i
+
+    # collect and aggregate results files
+    # loop separately for each type so only existing files are processed
+    # -prune argument: the search goes only one level of subfolders deep
+    vid="*_vid.csv"
+    ves="*_ves.csv"
+    std="*_std.csv"
+    i=0
+    find . -maxdepth 1 -type f -prune|grep "./$vid"|while read file; do
+	echo "Merging video results csv file: $file"
+	if [ $i -eq 0 ]; then
+	    # initialize output files
+	    cat $file > ZZ_videos.csv
+	else
+	    # skip first line of consecutive csv files
+	    tail -n +2 $file >> ZZ_videos.csv
+	fi
+	((i++))
+    done
+    i=0
+    find . -maxdepth 1 -type f -prune|grep "./$ves"|while read file; do
+	echo "Merging vessels results csv file: $file"
+	if [ $i -eq 0 ]; then
+	    # initialize output files
+	    cat $file > ZZ_vessels.csv
+	else
+	    # skip first line of consecutive csv files
+	    tail -n +2 $file >> ZZ_vessels.csv
+	fi
+	((i++))
+    done
+    i=0
+    find . -maxdepth 1 -type f -prune|grep "./$std"|while read file; do
+	echo "Merging rbcpaths results csv file: $file"
+	if [ $i -eq 0 ]; then
+	    # initialize output files
+	    cat $file > ZZ_rbcpaths.csv
+	else
+	    # skip first line of consecutive csv files
+	    tail -n +2 $file >> ZZ_rbcpaths.csv
+	fi
+	((i++))
+    done
+    exit
+fi
