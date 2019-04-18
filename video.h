@@ -30,12 +30,14 @@ struct video {
   void write_vid(std::string filename);
   video crop_black_edges();	/* it doesnt make a lot of sense for this to be recursive, since from the moment of black edge crop or also stabilization, the new video should be used for all further processing... */
 
-  bool quality_stability();	/* these functions return true for passed, false for negative. they may save their results to a variable and only re-calculate the first time they are called. but in a first iteration they will re-calculate everytime they are called in order to ensure accuracy. */
-  bool quality_duration();	/* the quality functions need to check if everything they need has been calcualted in the video structure (avg_img, etc) */
-  bool quality_content();
-  bool quality_focus();
-  bool quality_illumination();
-  bool quality_pressure();
+  bool quality_stability(bool verbose);	/* these functions return true for passed, false for negative. they may save their results to a variable and only re-calculate the first time they are called. but in a first iteration they will re-calculate everytime they are called in order to ensure accuracy. */
+  bool quality_duration(bool verbose);	/* the quality functions need to check if everything they need has been calcualted in the video structure (avg_img, etc) */
+  bool quality_content(bool verbose);
+  bool quality_focus(bool verbose);
+  bool quality_illumination(bool verbose);
+  bool quality_pressure(bool verbose);
+
+  double meanimage_focus;
   
   /* denoising functions */
   std::vector<cv::Mat> denoise(std::vector<cv::Mat> &frames);

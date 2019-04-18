@@ -32,6 +32,8 @@ struct output_parameters {
   double hct_dis_large;		/* "discharge hematocrit"(flow of hemoglobin) [mm^3/sec für Hb] */
   double hct_dis_small;
 
+  double meanimg_focus;		/* focusing parameter for the mean image. used to judge stability */
+
   double FCD;			/* FCD=TVD_small*PPV */
   double PPV;			/* weighted mean of the categorical variable: proportion of perfused vessels */
   
