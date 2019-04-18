@@ -26,7 +26,7 @@ struct PeakInfo
 /* histogram structs -end- */
 
 
-/* the following global functions are located in video.cpp */
+/* the following global functions are located in hist.cpp */
 PeakInfo peakInfo(int pos, int left_size, int right_size, float value);
 
 std::vector<int> getLocalMaximum(cv::InputArray _src, int smooth_size, int neighbor_size, float peak_per);

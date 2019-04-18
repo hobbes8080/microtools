@@ -256,3 +256,5 @@ vector<contour> merge_contours(vector<contour> A, vector<contour> B, double thre
 
 static bool abs_compare_double(double a, double b);
 static bool abs_compare(int a, int b);
+
+double focus(cv::Mat img);
