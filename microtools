@@ -251,9 +251,11 @@ while true; do
 	    #move and rename all xml files to parent dir
 	    find . -mindepth 2 -type f|grep ".xml"|while read file; do
 		filept=$(dirname $file|cut -c3-)
+		filept2=$(basename $filept)
 		filenm=$(basename $file)
-		filename=./${filept}_${filenm}
+		filename=./${filept2}_${filenm}
 		mv $file $filename
+		# rm $filept
 	    done
 	    #move all mha files to parent dir
 	    echo "Moving .mha files."
