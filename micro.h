@@ -163,6 +163,8 @@ class program {
 		static input_parameters in_params;
 
 		static output_parameters out_par;
+
+		void calc_quality_params(); /* calculate foc etc parameters (properties of the video class) that pertain to automated quality checking */
 		
 		program();
 		bool set_state(state NEW_STATE);
@@ -221,6 +223,8 @@ void clahe(Mat &img, double clip, int grid);
 //misc
 int max_vector(vector<int> a);
 int min_vector(vector<int> a);
+double max_vector(vector<double> a);
+double min_vector(vector<double> a);
 bool detect_params_change(int a, int b, int c, int d, int e, int f);
 void create_vessel_select(cv::Mat &img, vector<contour> cont, int rows, int cols);
 void read(char& input);

@@ -30,14 +30,22 @@ struct video {
   void write_vid(std::string filename);
   video crop_black_edges();	/* it doesnt make a lot of sense for this to be recursive, since from the moment of black edge crop or also stabilization, the new video should be used for all further processing... */
 
-  bool quality_stability(bool verbose);	/* these functions return true for passed, false for negative. they may save their results to a variable and only re-calculate the first time they are called. but in a first iteration they will re-calculate everytime they are called in order to ensure accuracy. */
-  bool quality_duration(bool verbose);	/* the quality functions need to check if everything they need has been calcualted in the video structure (avg_img, etc) */
-  bool quality_content(bool verbose);
-  bool quality_focus(bool verbose);
-  bool quality_illumination(bool verbose);
-  bool quality_pressure(bool verbose);
+  /* parameters that mainly serve automated quality grading */
+  double foc, stdbylength, venularstdstraightness, min_ven_rbcv;
+  int framefps;
 
-  double meanimage_focus;
+  /* output parameters from out_par that describe the video */
+  /* future implementation */
+
+  /* void calc_params(int PROGRAM_STATE, std::vector<vessel::vessel> VASA);		/\* calculate the parameters above, in the future maybe integrate out_par parameters that pertain to the video also in the video class *\/ -- do this in the program class since the vessels belong to the program calss and not the video class (because vessel class contains video class for hct ribbons, which precludes it from containing the vessels class....*/
+  /* VASA has to be passed on to this function because it is a member of the program class... */
+    
+  bool quality_stability(bool verbose, double fov, double foc_limit_low, double fov_limit_low);	/* these functions return true for passed, false for negative. they may save their results to a variable and only re-calculate the first time they are called. but in a first iteration they will re-calculate everytime they are called in order to ensure accuracy. */
+  bool quality_duration(bool verbose, int framesfps_limit_low);	/* the quality functions need to check if everything they need has been calcualted in the video structure (avg_img, etc) */
+  bool quality_content(bool verbose, double TVD, int content_limit_low, int content_limit_high);
+  bool quality_focus(bool verbose, int PROGRAM_STATE, double stdbylength_limit_low);
+  bool quality_illumination(bool verbose, double maxloc_lim_low, double maxloc_lim_high);
+  bool quality_pressure(bool verbose, int PROGRAM_STATE, double ven_rbcv, double venstdstraight_limit_low, double ven_rbcv_limit_low);
   
   /* denoising functions */
   std::vector<cv::Mat> denoise(std::vector<cv::Mat> &frames);

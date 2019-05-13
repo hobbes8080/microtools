@@ -32,8 +32,6 @@ struct output_parameters {
   double hct_dis_large;		/* "discharge hematocrit"(flow of hemoglobin) [mm^3/sec für Hb] */
   double hct_dis_small;
 
-  double meanimg_focus;		/* focusing parameter for the mean image. used to judge stability */
-
   double FCD;			/* FCD=TVD_small*PPV */
   double PPV;			/* weighted mean of the categorical variable: proportion of perfused vessels */
   
@@ -115,6 +113,23 @@ struct input_parameters{
   /* double conv_fact;		/\* conversion factor: um/px -> this will NOT be filled by the config file, but by the appropriate member from conv_fact_vect when a video file is opened *\/ */
   double cap_diam_cutoff;	/* cutoff in diameter between venules and capillaries */
   double cutoff_hyperdynamic_pervideo; /* min. proportion of "hyperdynamic" STD ridges needed in a video file regardless of vessel to classify the video as hyperdynamic - this will be in parallel to the per vessel classification  */
+
+  /* quality */
+  double foc_limit_low;
+  double fov_limit_low;
+
+  double maxloc_lim_low;
+  double maxloc_lim_high;
+
+  double venstdstraight_limit_low;
+  double ven_rbcv_limit_low;
+
+  double stdbylength_limit_low;
+
+  int framesfps_limit_low;
+
+  int content_limit_low;
+  int content_limit_high;
   
   /* HCT */
   int blb_min_threshold;

@@ -50,12 +50,13 @@ set( CMAKE_CXX_STANDARD_REQUIRED ON )
 add_executable(
   microtools.core
   main.cpp
-  ./microtools_development/program.cpp ./microtools_development/menu.cpp ./microtools_development/click.cpp ./microtools_development/ridge.cpp ./microtools_development/segment.cpp ./microtools_development/stabilize.cpp ./microtools_development/track.cpp ./microtools_development/vessel.cpp ./microtools_development/video.cpp ./microtools_development/misc.cpp ./microtools_development/out_params.cpp ./microtools_development/ITK.cpp ./microtools_development/hist.cpp
+  ./microtools_development/program.cpp ./microtools_development/menu.cpp ./microtools_development/click.cpp ./microtools_development/ridge.cpp ./microtools_development/segment.cpp ./microtools_development/stabilize.cpp ./microtools_development/track.cpp ./microtools_development/vessel.cpp ./microtools_development/video.cpp ./microtools_development/misc.cpp ./microtools_development/out_params.cpp ./microtools_development/ITK.cpp ./microtools_development/hist.cpp ./microtools_development/quality.cpp
   ./microtools_development/kernel/alloc.c ./microtools_development/kernel/convol.c ./microtools_development/kernel/correct.c ./microtools_development/kernel/error.c ./microtools_development/kernel/link.c ./microtools_development/kernel/normal.c ./microtools_development/kernel/position.c ./microtools_development/kernel/thresh.c ./microtools_development/kernel/width.c
   )
 
 install(TARGETS microtools.core DESTINATION ${CMAKE_INSTALL_PREFIX} )
 
 install(PROGRAMS microtools DESTINATION ${CMAKE_INSTALL_PREFIX} )
+install(PROGRAMS A_ver.sh DESTINATION ${CMAKE_INSTALL_PREFIX} )
 
 target_link_libraries( microtools.core ${OpenCV_LIBS} ${ITK_LIBRARIES} stdc++fs )

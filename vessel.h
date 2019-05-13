@@ -1,6 +1,7 @@
 #pragma once
 
 #include "video.h"
+
 extern "C" {
 	#include "microtools_development/kernel/lines.h"
 }

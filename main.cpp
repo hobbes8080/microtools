@@ -1,5 +1,5 @@
 #include "micro.h"
-#include "A_ver.h"
+#include "version.h"
 
 #define MAX_DIR_CHARS 256
 #define STD_CONF_NAME "microtools.conf"
