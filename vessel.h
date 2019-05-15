@@ -57,7 +57,7 @@ struct vessel {
   void calc_hemat();
   void calc_hemat_auto(double conv_fact_l);
   void calc_STD(video in);
-  void calc_vel(double s, double l, double h, int min, double fps, double conv_fact_l);
+  void calc_vel(double s, double l, double h, int min, double fps, double conv_fact_l, double conv_fact_cx);
   void calc_vel_orig(double s, double l, double h, int min, double fps, double conv_fact_l);
   void show_vel();
   void draw(cv::Mat& img);	/* draws in color */

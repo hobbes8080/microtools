@@ -109,6 +109,7 @@ struct input_parameters{
   std::string csv_separator;
   int mha_fps;			/* frames per second used to read .mha files (we do not read the xml file) */
   std::vector<double> conv_fact_vect;/* conversion factor: um/px , for different types of video*/
+  std::vector<double> conv_fact_corr;
   std::vector<int> frame_fullwidth_vect;/* width of a full frame (a frame without black borders). this is used to correct things such as clahe_gridsize and steger_high and steger_low for a reduced frame size when black borders are removed */
   /* double conv_fact;		/\* conversion factor: um/px -> this will NOT be filled by the config file, but by the appropriate member from conv_fact_vect when a video file is opened *\/ */
   double cap_diam_cutoff;	/* cutoff in diameter between venules and capillaries */
@@ -130,6 +131,17 @@ struct input_parameters{
 
   int content_limit_low;
   int content_limit_high;
+
+  /* stabilization */
+  int stab_mean_frames;
+  int stab_smoothing_radius;
+  double track_threshold1;
+  double track_threshold2;
+  int track_apertureSize;
+  int flow_maxLevel;
+  double flow_minEigThreshold;
+  double flow_width, flow_height, flow_search_epsilon;
+  int flow_search_maxCount;
   
   /* HCT */
   int blb_min_threshold;
@@ -166,7 +178,7 @@ struct input_parameters{
   void set_defaults(bool verbose);
   void translate_to_struct(bool verbose);		/* translates values stored in the map to the structure */
   void display_conf();
-  void convert_params_func(double conv_fact, bool verbose);
+  void convert_params_func(double conv_fact, bool verbose, double FOV_fact);
 };
 
 

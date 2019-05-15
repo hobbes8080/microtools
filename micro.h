@@ -174,7 +174,10 @@ class program {
 		void playback();
 		void cut_vid();
 		bool stab();
-		cv::Point stabalgorithm_sop(int SMOOTHING_RADIUS, bool writevideo);
+		cv::Point stabalgorithm_sop(int SMOOTHING_RADIUS, bool writevideo, bool scale_shear,
+					    double track_threshold1, double track_threshold2, int track_apertureSize,
+					    int flow_maxLevel, double flow_minEigThreshold,
+					    double flow_width, double flow_height, double flow_search_epsilon, int flow_search_maxCount);
 		bool stabalgorithm_sim();		
 		bool stabalgorithm_kal();		
 		void avg();

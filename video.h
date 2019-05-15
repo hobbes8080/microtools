@@ -15,7 +15,9 @@ struct video {
   std::vector<cv::Mat> frames;		// original data frames	
   double fps;	                        // frames per second	   
   int length;				// total number of frames
-  double conv_fact;
+  double conv_fact, conv_fact_c;	/* latter is used for conv_fact_corr vector */
+  int frame_fullwidth;
+  double FOV_fact;
   cv::Point max_traj;		/* max. amplitude of stabilization trajectory  in x and y axis*/
 
   video();

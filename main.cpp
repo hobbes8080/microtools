@@ -4,7 +4,7 @@
 #define MAX_DIR_CHARS 256
 #define STD_CONF_NAME "microtools.conf"
 
-// program version is defined in A_ver.h
+// program version is defined in version.h
 
 int main(int argc, char* argv[]) {
   // init message
