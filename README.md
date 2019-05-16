@@ -83,7 +83,12 @@ git init
 git clone <remote repository URL>  # https://github.com/hobbes8080/microtools.git
 ```
 
-Generate makefiles (from emacs IDE):
+Build and package project with scripted versioning using the automated build/versioning facility
+```
+./build.sh
+```
+
+Alternatively build manually. Step 1: invoke cmake to generate makefiles (from emacs IDE):
 ```
 M-x compile
 cmake .
@@ -92,7 +97,7 @@ rm -rf ./CMakeFiles
 rm -f Makefile
 ```
 
-Compilation (from emacs IDE):
+Step 2: compilation (from emacs IDE):
 ```
 M-x compile
 make -k
