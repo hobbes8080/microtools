@@ -145,6 +145,8 @@ int main(int argc, char* argv[]) {
     flag_write=true;
   if(flag_write)
     P.CLI_state=true;
+  if(flag_detect)
+    P.detection_requested=true;	// this is needed to differentiate external stabilization status based on user wishes
   // --set global status variables
   P.write_files_requested=flag_write;
   P.write_all_files_requested=flag_write_all;

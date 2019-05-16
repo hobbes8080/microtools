@@ -150,6 +150,7 @@ class program {
 		static bool bright_requested;
 		static bool framebright_requested;
 		static bool denoising_requested;
+		static bool detection_requested;
 		static bool iterate;
 
 		static bool denoised;
@@ -209,6 +210,8 @@ class program {
 		int rows, cols;
 		int VESSELS_ANALYZED;
 		video VIDEO_FILE;
+		video VIDEO_FILE_stab; /* this is a copy of VIDEO_FILE that is created after stabilization and will not be affected by further processing. may be used to export the stabilized video file */
+		video VIDEO_FILE_unstab; /* this is a copy of the original file before stabilization and is used if file conversion is requested in addition to stabilization */
 		/* output_parameters out_params; */
 		/* std::string OPENED_FILE; */
 		cv::Mat AVERAGE_IMAGE;

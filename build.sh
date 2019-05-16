@@ -8,6 +8,7 @@
 
 # this hack uses export of a variable from parent to child and uses the output from the child as the value. thus, passing a variable from child to parent is achieved, which is otherwise impossible.
 # another twist: in microtools, use installed version of this script. in build.sh, use local version.
+echo "Building procedure initiated for microtools version:"
 export ver=$(./A_ver.sh)
 
 # generate A_ver.h that sets the version for the cpp files.

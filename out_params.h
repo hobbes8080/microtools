@@ -117,6 +117,7 @@ struct input_parameters{
 
   /* quality */
   double foc_limit_low;
+  double foc_limit_high;
   double fov_limit_low;
 
   double maxloc_lim_low;

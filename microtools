@@ -309,7 +309,7 @@ if [[ $core_run_mode -eq 2 ]]; then
     # since otherwise in the case of multiple files being in the same subfolder,
     # results generated in the current cycle will inappropriately be deleted)
     # -prune argument: the search goes only one level of subfolders deep -- WRONG
-    find . -maxdepth 1 -iname '*.avi' -o -iname '*.mha' -prune|while read file; do
+    find . -maxdepth 1 -iname '*.avi' -o -iname '*.mha' -o -iname '*.h?????' -prune|while read file; do
 	dir=$(dirname "$file")
 	csv=$dir/*.csv
 	logfiles=($csv)
@@ -338,8 +338,70 @@ if [[ $core_run_mode -eq 2 ]]; then
     # done
     # implement multithreading for batch processing
     #parallel --citation
-    find . -maxdepth 1 -iname '*.avi' -o -iname '*.mha' -o -iname '*.h????' -prune | time parallel -j-1 --eta ${microtools_command} ${args_core} -i
-
+    # ------------------
+    # gather list of files that should be run: avoid running the same file twice if multiple file types of the same file exist
+    # CAVE: mha and avi filetypes of the same video should not coexist in the folder, otherwise results are unpredictable
+    # find all files that may be analyzed with microtools
+    # this complicated while loop only serves the purpose to fill the output of find into an array
+    # the find command has to be tuned to use posix-extended regex in order so that the (|){} do not have to be escaped with \. however, the dot has to be escaped to as to take it literally.
+    arra=()
+    while IFS=  read -r -d $'\0'; do
+	arra+=("$REPLY")
+    done < <(find . -regextype posix-extended -regex ".+\.(avi|AVI|mha|MHA|(h.(u|e|s).{3}))" -print0 )
+    # create arrays with the filename stems and extensions of all files found
+    base=()
+    ext=()
+    for i in "${arra[@]}"
+    do
+	base+=($(basename $i|sed 's/\.[^.]*$//'))
+	ext+=($(basename $i|sed 's/^.*\.//'))
+	# echo $base
+	# echo $ext
+	# echo $i
+    done
+    # find basenames that occur only one time and put them into an array
+    # this does not work with filenames with spaces since it does not use the fancy while loop read version from above
+    base_unique=($(printf '%s\n' "${base[@]}"|sort|uniq -u))
+    # find basenames that occur only one time and put them into an array
+    # this does not work with filenames with spaces since it does not use the fancy while loop read version from above
+    base_duplicate=($(printf '%s\n' "${base[@]}"|sort|uniq -d))
+    # initialize the run list
+    >run.txt
+    # find files in directory that match the unique basenames. add these to the run list
+    for file in ${base_unique[@]};do find . -name "${file}.*">>run.txt; done
+    # find files in the duplicate list with different extensions. add these to the run list in prioritized order, but only once.
+    for file in ${base_duplicate[@]};do
+	ext_pri="h?s???"
+	if [[ $(find . -name "${file}.${ext_pri}" | wc -c) -gt 0 ]]; then
+	    find . -name "${file}.${ext_pri}">>run.txt
+	    # continue with next for loop iteration (so that a duplicate is not used twice
+	    continue
+	else
+	    ext_pri="h?e???"
+	    if [[ $(find . -name "${file}.${ext_pri}" | wc -c) -gt 0 ]]; then
+		find . -name "${file}.${ext_pri}">>run.txt
+		# continue with next for loop iteration (so that a duplicate is not used twice
+		continue
+	    else
+		ext_pri="h?u???"
+		if [[ $(find . -name "${file}.${ext_pri}" | wc -c) -gt 0 ]]; then
+		    find . -name "${file}.${ext_pri}">>run.txt
+		    # continue with next for loop iteration (so that a duplicate is not used twice
+		    continue
+		else
+		    # such a file cannot exist, since in duplicates with the given selection criteria, there cannot be an avi without there being a MT file which is found above
+		    # # the remainder must be either avi, AVI, mha or MHA, so put this in the list
+		    # echo $(find . -regextype posix-extended -regexp ".+"${file}"\.("${ext_pri}")")
+		    echo "Duplicate entry without match encountered."
+		fi
+	    fi
+	fi
+    done
+    # now run microtools on run.txt
+    cat run.txt | time parallel -j-1 --eta ${microtools_command} ${args_core} -i
+    # clean up
+    rm run.txt
+    
     # collect and aggregate results files
     # loop separately for each type so only existing files are processed
     # -prune argument: the search goes only one level of subfolders deep

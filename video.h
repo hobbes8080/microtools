@@ -42,7 +42,7 @@ struct video {
   /* void calc_params(int PROGRAM_STATE, std::vector<vessel::vessel> VASA);		/\* calculate the parameters above, in the future maybe integrate out_par parameters that pertain to the video also in the video class *\/ -- do this in the program class since the vessels belong to the program calss and not the video class (because vessel class contains video class for hct ribbons, which precludes it from containing the vessels class....*/
   /* VASA has to be passed on to this function because it is a member of the program class... */
     
-  bool quality_stability(bool verbose, double fov, double foc_limit_low, double fov_limit_low);	/* these functions return true for passed, false for negative. they may save their results to a variable and only re-calculate the first time they are called. but in a first iteration they will re-calculate everytime they are called in order to ensure accuracy. */
+  bool quality_stability(bool verbose, double fov, double foc_limit_low, double foc_limit_high, double fov_limit_low);	/* these functions return true for passed, false for negative. they may save their results to a variable and only re-calculate the first time they are called. but in a first iteration they will re-calculate everytime they are called in order to ensure accuracy. */
   bool quality_duration(bool verbose, int framesfps_limit_low);	/* the quality functions need to check if everything they need has been calcualted in the video structure (avg_img, etc) */
   bool quality_content(bool verbose, double TVD, int content_limit_low, int content_limit_high);
   bool quality_focus(bool verbose, int PROGRAM_STATE, double stdbylength_limit_low);
@@ -66,6 +66,8 @@ struct video {
 
   enum VIDEOTYPE {CCT_mha, AVA_avi, VIDEOTYPE_NUM_ITEMS};
   VIDEOTYPE videotype;
+  enum STABILIZATIONTYPE {stabilization_unstable, stabilization_external, stabilization_microtools}; /* stab_undefined does not exist. the fact if stabilization is requested when converting the file will define if stabilization is deemed to have happened externally, or if requested it has been done by microtools */
+  STABILIZATIONTYPE stabilizationtype;
   enum CAMERATYPE {camera_undefined, cytocam_IDF, microscan_SDF, CAMERATYPE_NUM_ITEMS};
   CAMERATYPE cameratype=camera_undefined;
   enum SPECIESTYPE {species_undefined, pig, rat, human_adult, human_pediatrics, SPECIESTYPE_NUM_ITEMS};
@@ -77,6 +79,12 @@ struct video {
     {
       {CCT_mha, "m"},
       {AVA_avi, "a"}
+    };
+  std::map<STABILIZATIONTYPE, std::string> MText_stabilizationtype =
+    {
+      {stabilization_unstable, "u"},
+      {stabilization_external, "e"},
+      {stabilization_microtools, "s"}
     };
   std::map<CAMERATYPE, std::string> MText_cameratype =
     {
