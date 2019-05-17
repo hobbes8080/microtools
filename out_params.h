@@ -115,7 +115,7 @@ struct input_parameters{
   double cap_diam_cutoff;	/* cutoff in diameter between venules and capillaries */
   double cutoff_hyperdynamic_pervideo; /* min. proportion of "hyperdynamic" STD ridges needed in a video file regardless of vessel to classify the video as hyperdynamic - this will be in parallel to the per vessel classification  */
 
-  /* quality */
+  /* quality limits */
   double foc_limit_low;
   double foc_limit_high;
   double fov_limit_low;

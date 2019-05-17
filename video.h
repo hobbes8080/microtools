@@ -35,6 +35,7 @@ struct video {
   /* parameters that mainly serve automated quality grading */
   double foc, stdbylength, venularstdstraightness, min_ven_rbcv;
   int framefps;
+  double illum_maxloc, illum_maxval;
 
   /* output parameters from out_par that describe the video */
   /* future implementation */
