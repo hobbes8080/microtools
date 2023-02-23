@@ -15,6 +15,8 @@ To compile on Ubuntu 18.10, install the following packages:
 For ffmpeg support (necessary to open and write .avi files with cap.open):
 ```
 libv4l-dev ffmpeg libavutil-dev pkg-config libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libavresample-dev
+Update for Ubuntu 22.04 and up:
+libv4l-dev ffmpeg libavutil-dev pkg-config libavcodec-dev libavformat-dev libavutil-dev libswscale-dev
 ```
 
 For gtk support (necessary to play video):
