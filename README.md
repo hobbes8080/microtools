@@ -15,7 +15,7 @@ To compile on Ubuntu 18.10, install the following packages:
 For ffmpeg support (necessary to open and write .avi files with cap.open):
 ```
 libv4l-dev ffmpeg libavutil-dev pkg-config libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libavresample-dev
-Update for Ubuntu 22.04 and up:
+# Update for Ubuntu 22.04 and up:
 libv4l-dev ffmpeg libavutil-dev pkg-config libavcodec-dev libavformat-dev libavutil-dev libswscale-dev
 ```
 
@@ -60,6 +60,8 @@ mkdir build
 cd build
 rm -R * # recommended if step is repeated
 cmake -D BUILD_SHARED_LIBS=ON -D CMAKE_INSTALL_PREFIX=/usr/local -D Module_ITKVideoBridgeOpenCV=ON -D OpenCV_DIR=../../OpenCV-3.4.3/build ../ITK
+# Update for OpenCV 4.7.0 bridge from ITK 5.3.0:
+cmake -D BUILD_SHARED_LIBS=ON -D CMAKE_INSTALL_PREFIX=/usr/local -D Module_ITKVideoBridgeOpenCV=ON -D OpenCV_DIR=../../OpenCV-4.7.0/build ../ITK
 make -j12
 ```
 
