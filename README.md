@@ -117,14 +117,20 @@ checkinstall
 ## OpenCV
 ```
 sudo checkinstall --pkgname opencv-microtools --pkgversion 3.4.3-MT63
+# Update MT70
+sudo checkinstall --pkgname opencv-microtools --pkgversion 4.7.0-MT70
 ```
 ## ITK
 ```
 sudo checkinstall --pkgname itk-microtools --pkgversion 14.3.1-MT59
+# Update MT70
+sudo checkinstall --pkgname itk-microtools --pkgversion 5.3.0-MT70
 ```
 ## MicroTools
 ```
 sudo checkinstall --pkgname microtools --pkgversion 63 -y --default
+# Update MT70
+sudo checkinstall --pkgname microtools --pkgversion 70 -y --default
 ```
 ## manual install (example)
 ```
