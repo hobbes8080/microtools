@@ -62,6 +62,8 @@ rm -R * # recommended if step is repeated
 cmake -D BUILD_SHARED_LIBS=ON -D CMAKE_INSTALL_PREFIX=/usr/local -D Module_ITKVideoBridgeOpenCV=ON -D OpenCV_DIR=../../OpenCV-3.4.3/build ../ITK
 # Update for OpenCV 4.7.0 bridge from ITK 5.3.0:
 cmake -D BUILD_SHARED_LIBS=ON -D CMAKE_INSTALL_PREFIX=/usr/local -D Module_ITKVideoBridgeOpenCV=ON -D OpenCV_DIR=../../OpenCV-4.7.0/build ../ITK
+# Update for OpenCV 4.8.0 bridge from ITK 5.3.0:
+cmake -D BUILD_SHARED_LIBS=ON -D CMAKE_INSTALL_PREFIX=/usr/local -D Module_ITKVideoBridgeOpenCV=ON -D OpenCV_DIR=../../OpenCV-4.8.0/build ../ITK
 make -j12
 ```
 
