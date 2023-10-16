@@ -52,7 +52,7 @@ make -j12
 sudo make install
 ```
 
-Fetch and compile openCV:
+Fetch and compile ITK:
 ```
 cd ~/microtools/ITK-stable
 git clone https://github.com/InsightSoftwareConsortium/ITK.git # alternatively, download known working version, eg. 14.3.1
