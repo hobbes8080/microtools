@@ -17,6 +17,8 @@ To compile on Ubuntu 19.10, install the following packages:
 For ffmpeg support (necessary to open and write .avi files with cap.open):
 ```
 libv4l-dev ffmpeg libavutil-dev pkg-config libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libavresample-dev
+# Update for Ubuntu 22.04 and up:
+libv4l-dev ffmpeg libavutil-dev pkg-config libavcodec-dev libavformat-dev libavutil-dev libswscale-dev
 ```
 
 For gtk support (necessary to play video):
@@ -60,6 +62,10 @@ mkdir build
 cd build
 rm -R * # recommended if step is repeated
 cmake -D BUILD_SHARED_LIBS=ON -D CMAKE_INSTALL_PREFIX=/usr/local -D Module_ITKVideoBridgeOpenCV=ON -D OpenCV_DIR=../../OpenCV-3.4.3/build ../ITK
+# Update for OpenCV 4.7.0 bridge from ITK 5.3.0:
+cmake -D BUILD_SHARED_LIBS=ON -D CMAKE_INSTALL_PREFIX=/usr/local -D Module_ITKVideoBridgeOpenCV=ON -D OpenCV_DIR=../../OpenCV-4.7.0/build ../ITK
+# Update for OpenCV 4.8.0 bridge from ITK 5.3.0:
+cmake -D BUILD_SHARED_LIBS=ON -D CMAKE_INSTALL_PREFIX=/usr/local -D Module_ITKVideoBridgeOpenCV=ON -D OpenCV_DIR=../../OpenCV-4.8.0/build ../ITK
 make -j12
 ```
 
@@ -114,15 +120,23 @@ checkinstall
 ```
 ## OpenCV
 ```
-sudo checkinstall --pkgname opencv-microtools --pkgversion 3.4.3-MT66 -y --default
+sudo checkinstall --pkgname opencv-microtools --pkgversion 3.4.3-MT63
+# Update MT70
+sudo checkinstall --pkgname opencv-microtools --pkgversion 4.7.0-MT70
+sudo checkinstall --pkgname opencv-microtools --pkgversion 4.8.0-MT70-U2310
 ```
 ## ITK
 ```
-sudo checkinstall --pkgname itk-microtools --pkgversion 14.3.1-MT66 -y --default
+sudo checkinstall --pkgname itk-microtools --pkgversion 14.3.1-MT59
+# Update MT70
+sudo checkinstall --pkgname itk-microtools --pkgversion 5.3.0-MT70
+sudo checkinstall --pkgname itk-microtools --pkgversion 5.3.0-MT70-U2310
 ```
 ## MicroTools
 ```
-sudo checkinstall --pkgname microtools --pkgversion 66 -y --default
+sudo checkinstall --pkgname microtools --pkgversion 63 -y --default
+# Update MT70
+sudo checkinstall --pkgname microtools --pkgversion 70 -y --default
 ```
 ## manual install (example)
 ```
