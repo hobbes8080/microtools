@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <boost/lambda/lambda.hpp>
 
 /* OUTPUT_PARAMETERS */
 
@@ -225,7 +224,6 @@ struct input_parameters{
   /* SO2 params */
   double Lout_blob_sizereduce;
   double Lin_cutoff, Lout_cutoff;
-  int num_frame_luminosity;
   bool use_frame_luminosity, use_blob_luminosity;
   double k_HbR_470, k_HbO2_470, k_HbR_527, k_HbO2_527;
   int vesmatch_threshold;	// acceptable translation pixels for vessel matching

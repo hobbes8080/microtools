@@ -132,7 +132,6 @@ class program {
 		static int FCD_CUT_OFF;							// cut-off velocity to determine if a capillary is perfused
 
   inline static vector<cv::Mat>stat_frames_orig; // this is a static copy of the original frames, to make accessible for luminosity analysis in the vessel class.
-  inline static int Lout_cutoff_dep;
   
 		static std::string input_file_path;
 		static std::string input_file_name;

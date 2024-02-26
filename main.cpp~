@@ -8,7 +8,7 @@
 
 int main(int argc, char* argv[]) {
   // init message
-  std::cout << "Microtools CORE version " << ver_def << endl << ver_txt << endl;
+  std::cout << "Microtools CORE version " << ver_def << ver_txt;
 
   program P;
   int argct;
@@ -235,13 +235,6 @@ int main(int argc, char* argv[]) {
       P.detect_requested = false;
       P.STD_requested = false;
       P.HCT_requested = false;
-      // set there first, since in setstate TVD it depends on if STD is also requested or not (via output_parameters::reorder_intravessel_Lout_OD())
-      if(flag_detect)      
-	P.detect_requested = true;
-      if(flag_std)
-	P.STD_requested = true;
-      if(flag_hct)
-	P.HCT_requested = true;
       
       // invoke all further prossessing functions here according to the flags given
       // if(flag_detect||flag_std||flag_hct){
@@ -252,15 +245,15 @@ int main(int argc, char* argv[]) {
 	P.set_state(program::state::stabilized);
       }
       if(flag_detect){
-	// P.detect_requested = true;
+	P.detect_requested = true;
 	P.set_state(program::state::segmented);
       }
       if(flag_std){
-	// P.STD_requested = true;
+	P.STD_requested = true;
 	P.set_state(program::state::diagramed);
       }
       if(flag_hct){
-	// P.HCT_requested = true;
+	P.HCT_requested = true;
 	P.set_state(program::state::ribboned);
       }
 

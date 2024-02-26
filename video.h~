@@ -35,7 +35,7 @@ struct video {
   void write_vid(std::string filename);
   video crop_black_edges();	/* it doesnt make a lot of sense for this to be recursive, since from the moment of black edge crop or also stabilization, the new video should be used for all further processing... */
   /* void calc_vessel_mask(std::vector<vessel::vessel> VASA); //--this cannot be defined here since vessel class definitions cannot exist here - it would create recursive include statements. this could be remedied by an overdue redefinition of classes in microtools*/
-  void calc_Lin(double pixel_cutoff);
+  void calc_Lin(int pixel_cutoff);
 
   /* parameters that mainly serve automated quality grading */
   double foc, stdbylength, venularstdstraightness, min_ven_rbcv;

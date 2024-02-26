@@ -27,7 +27,8 @@ set(CMAKE_CXX_COMPILER "g++")
 set(CMAKE_INSTALL_PREFIX /usr/local/bin)
 
 # opencv default install
-find_package( OpenCV 3.4.3 EXACT REQUIRED ) #prev. 3.3.1, current max. ver. 4.0, only one working for ITK comp.  3.4
+# find_package( OpenCV 3.4.3 EXACT REQUIRED ) #prev. 3.3.1, current max. ver. 4.0, only one working for ITK comp.  3.4
+find_package( OpenCV 4.8.0 EXACT REQUIRED )
 # -> microtools compiles with opencv 4.0, but 3.4 is used for ITK compilation
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
@@ -36,7 +37,8 @@ include_directories( ${OpenCV_INCLUDE_DIRS} )
 # include_directories( ${OpenCV_INCLUDE_DIRS} )
 
 # ITK default install
-find_package( ITK 4.13 EXACT REQUIRED ) #prev.4.13, curent max. ver. 5.0, works but unreliable, most reliable version is 4.13
+# find_package( ITK 4.13 EXACT REQUIRED ) #prev.4.13, curent max. ver. 5.0, works but unreliable, most reliable version is 4.13
+find_package( ITK 5.3.0 EXACT REQUIRED )
 include( ${ITK_USE_FILE} )
 
 # std::experimental::filesystem

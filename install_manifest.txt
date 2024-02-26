@@ -1,0 +1,3 @@
+/usr/local/bin/microtools.core
+/usr/local/bin/microtools
+/usr/local/bin/A_ver.sh

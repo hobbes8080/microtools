@@ -10,8 +10,8 @@ microtools_command=./microtools.core
 # snap OR make install OR install .deb
 microtools_command=microtools.core
 
-opts_string=[xezaclqjdshewkrvmngtbfoi:p:]
-usage_string=${opts_string}";; maintenance [-xezacl]; batch processing [-qdshvwkqbfmty] [-p parameter_file]; debug [-jdshvwkqbfmty] [-i input file] [-p parameter_file]"
+opts_string=[xezaclqjdshewkrvmngtbfoui:p:]
+usage_string=${opts_string}";; maintenance [-xezacl]; batch processing [-qdshvwkqbfmtyu] [-p parameter_file]; debug [-jdshvwkqbfmtyu] [-i input file] [-p parameter_file]"
 # microtools_command=microtools
 
 # microtools batch, 2017-11-28, 2018-05-13, 2018-06-08, 2018-11-21 by Matthias Hilty
@@ -69,6 +69,47 @@ usage_string=${opts_string}";; maintenance [-xezacl]; batch processing [-qdshvwk
 
 echo "Microtools FRAMEWORK version $ver"
 
+
+# define functions
+option_x(){
+    #--------------
+    # delete temp. files
+    rm run.txt &> /dev/null	    
+    #delete STD and HCT folders and files
+    echo "Cleaning STD and HCT folders."
+    rm -r *_STD &> /dev/null
+    rm -r *_HCT &> /dev/null
+    #delete png files
+    echo "Cleaning contrasting and vessel recognition files."
+    rm *_ctr_?.png &> /dev/null
+    rm *_dve.png &> /dev/null
+    rm *_dvr.png &> /dev/null
+    rm *_dvs.png &> /dev/null
+    rm *_avg.png &> /dev/null
+    #delete csv files where corresponding video files exist
+    echo "Cleaning individual .csv files."
+    find . -iname '*.avi' -o -iname '*.mha' -o -iname '*.h?????' -prune|while read file; do
+	dir=$(dirname "$file")
+	csv=$dir/*.csv
+	logfiles=($csv)
+	if [[ ${#logfiles[@]} -gt 0 ]]; then
+	    # echo "removing csv file(s) (subfolder routine): $csv"
+	    rm $csv &> /dev/null # &> /dev/null supresses error msgs
+	    # else
+	    #     echo "no csv present, not removing. (subfolder routine)"
+	fi
+    done
+    csv="./*.csv"
+    logfiles=($csv)
+    if [[ ${#logfiles[@]} -gt 0 ]]; then
+	# echo "removing csv file(s) (home routine): $csv"
+	rm $csv &> /dev/null
+	# else
+	# 	echo "no csv present, not removing. (home routine)"
+    fi
+    #--------------
+}
+
 #check for options that mandate direct handling in the script
 core_run_mode=0
 ARGS=$@
@@ -78,37 +119,7 @@ while true; do
     case "$1" in
 	-x)
 	    echo "Cleaning previous microtools results."
-	    #--------------
-	    #delete csv files where corresponding video files exist
-	    echo "Cleaning individual .csv files."
-	    find . -iname '*.avi' -o -iname '*.mha' -prune|while read file; do
-		dir=$(dirname "$file")
-		csv=$dir/*.csv
-		logfiles=($csv)
-		if [[ ${#logfiles[@]} -gt 0 ]]; then
-		    echo "removing csv file(s) (subfolder routine): $csv"
-		    rm $csv
-		# else
-		#     echo "no csv present, not removing. (subfolder routine)"
-		fi
-	    done
-	    csv="./*.csv"
-	    logfiles=($csv)
-	    if [[ ${#logfiles[@]} -gt 0 ]]; then
-		echo "removing csv file(s) (home routine): $csv"
-		rm $csv
-	    # else
-	    # 	echo "no csv present, not removing. (home routine)"
-	    fi
-	    #delete STD and HCT folders and files
-	    echo "Cleaning STD andh HCT folders."
-	    rm -r *_STD
-	    rm -r *_HCT
-	    #delete png files
-	    echo "Cleaning contrasting and vessel recognition files."
-	    rm *_ctr_?.png
-	    rm *_dve.png
-	    #--------------
+	    option_x
 	    echo "Done."
 	    exit
 	    shift;;
@@ -309,27 +320,28 @@ if [[ $core_run_mode -eq 2 ]]; then
     # since otherwise in the case of multiple files being in the same subfolder,
     # results generated in the current cycle will inappropriately be deleted)
     # -prune argument: the search goes only one level of subfolders deep -- WRONG
-    find . -maxdepth 1 -iname '*.avi' -o -iname '*.mha' -o -iname '*.h?????' -prune|while read file; do
-	dir=$(dirname "$file")
-	csv=$dir/*.csv
-	logfiles=($csv)
-	if [[ ${#logfiles[@]} -gt 0 ]]; then
-	    echo "Removing csv file(s) (subfolder routine): $csv"
-	    rm $csv
-	# else
-	#     echo "no csv present, not removing. (subfolder routine)"
-	fi
-    done
-    csv="./*.csv"
-    logfiles=($csv)
-    if [[ ${#logfiles[@]} -gt 0 ]]; then
-	echo "Removing csv file(s) (home routine): $csv"
-	rm $csv
-    # else
-    # 	echo "no csv present, not removing. (home routine)"
-    fi
+    option_x
+    # find . -maxdepth 1 -iname '*.avi' -o -iname '*.mha' -o -iname '*.h?????' -prune|while read file; do
+    # 	dir=$(dirname "$file")
+    # 	csv=$dir/*.csv
+    # 	logfiles=($csv)
+    # 	if [[ ${#logfiles[@]} -gt 0 ]]; then
+    # 	    echo "Removing csv file(s) (subfolder routine): $csv"
+    # 	    rm $csv
+    # 	# else
+    # 	#     echo "no csv present, not removing. (subfolder routine)"
+    # 	fi
+    # done
+    # csv="./*.csv"
+    # logfiles=($csv)
+    # if [[ ${#logfiles[@]} -gt 0 ]]; then
+    # 	echo "Removing csv file(s) (home routine): $csv"
+    # 	rm $csv
+    # # else
+    # # 	echo "no csv present, not removing. (home routine)"
+    # fi
 
-    # run microtools
+    # run microtools CORE
     # -prune argument: the search goes only one level of subfolders deep
     # find . -iname '*.avi' -o -iname '*.mha' -prune|while read file; do
     #     # run microtools
@@ -398,7 +410,7 @@ if [[ $core_run_mode -eq 2 ]]; then
 	fi
     done
     # now run microtools on run.txt
-    cat run.txt | time parallel -j-1 --eta ${microtools_command} ${args_core} -i
+    cat run.txt | time parallel -j-2 --eta ${microtools_command} ${args_core} -i
     # clean up
     rm run.txt
     
@@ -419,6 +431,8 @@ if [[ $core_run_mode -eq 2 ]]; then
 	    tail -n +2 $file >> ZZ_videos.csv
 	fi
 	((i++))
+	# remove appended file
+	rm $file
     done
     i=0
     find . -maxdepth 1 -type f -prune|grep "./$ves"|while read file; do
@@ -431,6 +445,8 @@ if [[ $core_run_mode -eq 2 ]]; then
 	    tail -n +2 $file >> ZZ_vessels.csv
 	fi
 	((i++))
+	# remove appended file
+	rm $file
     done
     i=0
     find . -maxdepth 1 -type f -prune|grep "./$std"|while read file; do
@@ -443,6 +459,8 @@ if [[ $core_run_mode -eq 2 ]]; then
 	    tail -n +2 $file >> ZZ_rbcpaths.csv
 	fi
 	((i++))
+	# remove appended file
+	rm $file
     done
     exit
 fi

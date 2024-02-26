@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cmake .
+make -j12
+checkinstall --pkgname microtools --pkgversion 61 -y --default

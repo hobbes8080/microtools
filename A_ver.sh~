@@ -1,7 +1,6 @@
 #!/bin/bash
 
-version="70b"
-text="2023-10 by Matthias P Hilty"
+version="63b"
 
 # this is the counterpart to the hack that uses export of a variable from parent to child and uses the output from the child as the value. thus, passing a variable from child to parent is achieved, which is otherwise impossible.
 echo $version
@@ -20,7 +19,7 @@ eval set -- "$OPTS"
 while true; do
     case "$1" in
 	-h)
-	    echo -e "/* microtools version declaration */\n\n#define ver_def \""$version"\"\n#define ver_txt \""$text"\"" > ./version.h
+	    echo -e "/* microtools version declaration */\n\n#define ver_def \""$version"\"" > ./version.h
 	    echo "Generated microtools version header file."
 	    exit
 	    shift;;

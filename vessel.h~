@@ -56,8 +56,6 @@ struct vessel {
 
   double Lout_mean;		/* temporal mean luminosity within vessels*/
   double Lout_mean_start, Lout_mean_end;
-  double Lout_frame;		/* temporal mean luminosity within vessels*/
-  double Lout_frame_start, Lout_frame_end;
   double Lout_blob;/* temporal mean luminosity within RBCs*/
   double Lout;			/* greater of Lout_mean and Lout_blob: reduces errors due to plasma in mean images VS plasma next to blobs */
   double Lout_start, Lout_end;

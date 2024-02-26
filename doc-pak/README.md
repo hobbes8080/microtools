@@ -3,16 +3,14 @@ MicroTools implements an advanced computer vision algorithm permitting automated
 
 Version 63 of MicroTools has been described in detail and validated against the current gold standard in the following manuscript: "An automated software tool called MicroTools for quantifying capillary density and red blood cell velocity in handheld vital microscopy".
 
-Version 65 of MicroTools contains incremental improvements but does not change any of the validated results.
-
 # Releases
 Initial release: test release, purpose: test release infrastructure
 
-Current release: MicroTools version 65
+Current release: MicroTools version 63
 
 # Compilation
 ## OpenCV
-To compile on Ubuntu 19.10, install the following packages:
+To compile on Ubuntu 18.10, install the following packages:
 
 For ffmpeg support (necessary to open and write .avi files with cap.open):
 ```
@@ -38,7 +36,7 @@ make -j12
 ```
 
 ## ITK
-To compile on Ubuntu 19.10, install the following packages:
+To compile on Ubuntu 18.10, install the following packages:
 ```
 uuid-dev libtclap-dev libtiff-dev libpng-dev
 ```
@@ -52,7 +50,7 @@ make -j12
 sudo make install
 ```
 
-Fetch and compile ITK:
+Fetch and compile openCV:
 ```
 cd ~/microtools/ITK-stable
 git clone https://github.com/InsightSoftwareConsortium/ITK.git # alternatively, download known working version, eg. 14.3.1
@@ -85,12 +83,7 @@ git init
 git clone <remote repository URL>  # https://github.com/hobbes8080/microtools.git
 ```
 
-Build and package project with scripted versioning using the automated build/versioning facility
-```
-./build.sh
-```
-
-Alternatively build manually. Step 1: invoke cmake to generate makefiles (from emacs IDE):
+Generate makefiles (from emacs IDE):
 ```
 M-x compile
 cmake .
@@ -99,7 +92,7 @@ rm -rf ./CMakeFiles
 rm -f Makefile
 ```
 
-Step 2: compilation (from emacs IDE):
+Compilation (from emacs IDE):
 ```
 M-x compile
 make -k
@@ -114,15 +107,15 @@ checkinstall
 ```
 ## OpenCV
 ```
-sudo checkinstall --pkgname opencv-microtools --pkgversion 3.4.3-MT66 -y --default
+sudo checkinstall --pkgname opencv-microtools --pkgversion 3.4.3-MT63
 ```
 ## ITK
 ```
-sudo checkinstall --pkgname itk-microtools --pkgversion 14.3.1-MT66 -y --default
+sudo checkinstall --pkgname itk-microtools --pkgversion 14.3.1-MT59
 ```
 ## MicroTools
 ```
-sudo checkinstall --pkgname microtools --pkgversion 66 -y --default
+sudo checkinstall --pkgname microtools --pkgversion 63 -y --default
 ```
 ## manual install (example)
 ```
