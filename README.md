@@ -83,6 +83,10 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/share
 ```
 
 ## Microtools
+To compile on Ubuntu 22.04, install the following packages:
+```
+libboost-all-dev
+```
 
 Fetch:
 ```
