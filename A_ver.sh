@@ -1,7 +1,7 @@
 #!/bin/bash
 
-version="70b"
-text="2023-10 by Matthias P Hilty"
+version="72"
+text="2024-12 by Matthias P Hilty"
 
 # this is the counterpart to the hack that uses export of a variable from parent to child and uses the output from the child as the value. thus, passing a variable from child to parent is achieved, which is otherwise impossible.
 echo $version

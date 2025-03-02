@@ -8,7 +8,7 @@ Version 65 of MicroTools contains incremental improvements but does not change a
 # Releases
 Initial release: test release, purpose: test release infrastructure
 
-Current release: MicroTools version 65
+Current release: MicroTools version 71b
 
 # Compilation
 ## OpenCV
@@ -83,6 +83,10 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/share
 ```
 
 ## Microtools
+To compile on Ubuntu 24.04, install the following packages:
+```
+libboost-all-dev
+```
 
 Fetch:
 ```
