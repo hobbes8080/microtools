@@ -151,3 +151,4 @@ ITKFactoryRegistration/itkTransformIOFactoryRegisterManager.h
 microtools.core
 cmake_install.cmake
 CMakeCache.txt
+*.deb
