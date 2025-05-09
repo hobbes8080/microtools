@@ -83,6 +83,7 @@ option_x(){
     echo "Cleaning contrasting and vessel recognition files."
     rm *_ctr_?.png &> /dev/null
     rm *_dve.png &> /dev/null
+    rm *_dso.png &> /dev/null
     rm *_dvr.png &> /dev/null
     rm *_dvs.png &> /dev/null
     rm *_avg.png &> /dev/null
@@ -410,7 +411,7 @@ if [[ $core_run_mode -eq 2 ]]; then
 	fi
     done
     # now run microtools on run.txt
-    cat run.txt | time parallel -j-2 --eta ${microtools_command} ${args_core} -i
+    cat run.txt | time parallel -j1 --eta ${microtools_command} ${args_core} -i
     # clean up
     rm run.txt
     

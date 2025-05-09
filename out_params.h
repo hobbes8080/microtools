@@ -61,11 +61,17 @@ struct output_parameters {
   double OD_small, OD_large;
   double OD_start, OD_end;  	// NOT USED on per-video level (just like OD on per-video level)
   double OD; 			// see SO2 for weighing info. CAVE this variable is not used at all, since the "mean" volume-weighted SO2 is only calculated on a per-vessel basis to avoid mixing different proportions of venules and capillaries. this is in contrast to how SO2_small and SO2_large are calculated - they prefer per-video calculations to increase the accuracy by increasing the available capillaries and venules to take part in the measurement.
-  double SO2_small, SO2_large, SO2; // CAVE SO2 is not only weighted by length, but by volume, and across all vessels (capillaries and venules). in this way segmentation bias is eliminated, but also blood shifts from cap. to ven. system is taken into account to reach a value that represents a mean value across the tissue that is comparable to NIRS or O2C measurements
+  double SO2_small, SO2_small_raw, SO2_large, SO2_large_raw, SO2, SO2_raw; // CAVE SO2 is not only weighted by length, but by volume, and across all vessels (capillaries and venules). in this way segmentation bias is eliminated, but also blood shifts from cap. to ven. system is taken into account to reach a value that represents a mean value across the tissue that is comparable to NIRS or O2C measurements
+  double SO2_small_direct, SO2_small_direct_raw, SO2_large_direct, SO2_large_direct_raw, SO2_small_vessel, SO2_small_vessel_raw, SO2_large_vessel, SO2_large_vessel_raw;
   double SO2_start, SO2_end;
+  double SO2_direct, SO2_direct_raw, SO2_vessel, SO2_vessel_raw;
+  bool ratio_analysis_performed;
+
+  double sat_norm_a_small_ind, sat_norm_b_small_ind, sat_norm_a_large_ind, sat_norm_b_large_ind; // normalization parameters for all measurements in the current video. can be used to derive generalizable normalization parameters from a set of videos
 
   double O2extraction, O2shunt; // O2 extraction is best represented by intracapillary delta SO2 (because the measurement eliminates bias introduced by backdiffusion from venules to capillaries), while O2 shunting is best reprsented by the delta between capillary and venular SO2 (because backdiffusion from venules to capillaries is taken into account)
-  
+  double O2shunt_direct;
+
   int pxhoriz, pxvert, fps, frames; /* properties of the video clip that are relevant for data analysis and reporting */
 
   bool quality_accepted, quality_duration, quality_illumination, quality_stability,
@@ -92,7 +98,7 @@ struct output_parameters {
   void calc_STD(std::vector<vessel> VASA);
   void calc_HCT(std::vector<vessel> &VASA, double Lin_fromvideo);
   void reorder_intravessel_Lout_OD(std::vector<vessel> &VASA, bool use_STD);
-  void calc_SO2(std::vector<vessel> &VASA, double k_HbR_470, double k_HbO2_470, double k_HbR_527, double k_HbO2_527, std::string input_file_path, std::string input_file_name, int vesmatch_threshold, std::string csv_separator);
+  void calc_SO2(std::vector<vessel> &VASA, double k_HbR_470, double k_HbO2_470, double k_HbR_527, double k_HbO2_527, std::string input_file_path, std::string input_file_name, int vesmatch_threshold, std::string csv_separator, double sat_norm_a_small, double sat_norm_b_small, double sat_norm_a_large, double sat_norm_b_large);
   void write_out();
 };
 
@@ -230,6 +236,8 @@ struct input_parameters{
   double k_HbR_470, k_HbO2_470, k_HbR_527, k_HbO2_527;
   int vesmatch_threshold;	// acceptable translation pixels for vessel matching
   double intracap_lengthfrac;
+
+  double sat_norm_a_small, sat_norm_b_small, sat_norm_a_large, sat_norm_b_large;
 
     /* FUNCTIONS */
   input_parameters();		/* constructor */

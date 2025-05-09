@@ -63,12 +63,13 @@ struct vessel {
   double Lout_start, Lout_end;
   double OD;			/* optical density */
   double OD_start, OD_end;
-  double SO2;
+  double SO2, SO2_raw, SO2_trans; // SO2_raw is the raw value before normalization, SO2_trans is the normalized value before resetting outliers
   double SO2_start, SO2_end;
   double SO2_a_v_position;	
   double SO2_delta_intravessel;
-  int corresp_vessel_compl_wavelength;
-  int a_v_rank;
+  double corresp_vessel_compl_wavelength;
+  double a_v_rank;
+  double SO2_vis; // SO2 value for visualization (mix between per-vessel and per-video)
 
   /* double num_std_ridges; */
   /* double num_std_ridges_accepted; */

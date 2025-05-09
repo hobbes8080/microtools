@@ -78,7 +78,7 @@ struct video {
   cv::Mat avg_img_SO2delta;
 
   
-  enum VIDEOTYPE {CCT_mha, AVA_avi, VIDEOTYPE_NUM_ITEMS};
+  enum VIDEOTYPE {CCT_mha, AVA_avi, OXY_int, VIDEOTYPE_NUM_ITEMS};
   VIDEOTYPE videotype;
   enum STABILIZATIONTYPE {stabilization_unstable, stabilization_external, stabilization_microtools}; /* stab_undefined does not exist. the fact if stabilization is requested when converting the file will define if stabilization is deemed to have happened externally, or if requested it has been done by microtools */
   STABILIZATIONTYPE stabilizationtype;
@@ -92,7 +92,8 @@ struct video {
   std::map<VIDEOTYPE, std::string> MText_videotype =
     {
       {CCT_mha, "m"},
-      {AVA_avi, "a"}
+      {AVA_avi, "a"},
+      {OXY_int, "i"}
     };
   std::map<STABILIZATIONTYPE, std::string> MText_stabilizationtype =
     {

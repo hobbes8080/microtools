@@ -151,4 +151,10 @@ ITKFactoryRegistration/itkTransformIOFactoryRegisterManager.h
 microtools.core
 cmake_install.cmake
 CMakeCache.txt
+backup-012520251429-pre-microtools.tgz
+*.tgz
+*.deb
+CMakeFiles/*.*
+*.DS_Store
+.DS_Store
 *.deb
