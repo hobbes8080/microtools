@@ -16,7 +16,7 @@ eval set -- "$OPTS"
 
 
 
-arch="arm64"
+arch="amd64"
 
 # this hack uses export of a variable from parent to child and uses the output from the child as the value. thus, passing a variable from child to parent is achieved, which is otherwise impossible.
 # another twist: in microtools, use installed version of this script. in build.sh, use local version.
